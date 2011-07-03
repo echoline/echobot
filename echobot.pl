@@ -82,12 +82,28 @@ while (my $input = <$sock>) {
 
 		print $from . " says " . $msg . "\n";
 
-		if ($parts[2] =~ $channel) {
-			$msg =~ s/^$nick\W*//;
-			reply($from, $channel, $msg);
+		if ($parts[2] =~ /^#/) {
+			$msg =~ s/^$nick\W+//;
+			reply($from, $parts[2], $msg);
 		}
 		elsif ($parts[2] =~ $nick) {
 			reply($from, $from, $msg);
+		}
+	}
+	elsif ($input =~ /INVITE/) { 
+		my $chunk = substr($input, 1);
+		my $from = substr($chunk, 0, index($chunk, "!"));
+		my $targ = substr($chunk, index($chunk, ":")+1);
+		my @parts = split(/ /, substr($chunk, 0, index($chunk, ":")));
+
+		if ($parts[1] ne 'INVITE') {
+			next;
+		}
+
+		print "invitation from " . $from . " to " . $targ . "\n";
+
+		if ($targ =~ /^#/) {
+			print $sock "JOIN " . $targ . "\r\n";
 		}
 	}
 	else {
