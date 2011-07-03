@@ -69,22 +69,10 @@ while (my $input = <$sock>) {
 
 		if ($parts[2] =~ $channel) {
 			$msg =~ s/^$nick\W*//;
-			my $reply = $rs->reply($from, $msg);
-			if ($reply =~ /^ERR:/) {
-				print "$reply\n";
-			} else {
-				print $sock "PRIVMSG $channel :$reply\r\n";
-				print "I say $reply\n";
-			}
+			reply($from, $channel, $msg);
 		}
 		elsif ($parts[2] =~ $nick) {
-			my $reply = $rs->reply($from, $msg);
-			if ($reply =~ /^ERR:/) {
-				print "$reply\n";
-			} else {
-				print $sock "PRIVMSG $from :$reply\r\n";
-				print "I say $reply\n";
-			}
+			reply($from, $from, $msg);
 		}
 	}
 	else {
@@ -93,3 +81,15 @@ while (my $input = <$sock>) {
 	}
 }
 
+sub reply {
+	my ($from, $to, $msg) = @_;
+
+	my $reply = $rs->reply($from, $msg);
+
+	if ($reply =~ /^ERR:/) {
+		print "$reply\n";
+	} else {
+		print $sock "PRIVMSG $to :$reply\r\n";
+		print "I say $reply\n";
+	}
+}
