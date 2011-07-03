@@ -19,6 +19,19 @@ my $login = "echobot";
 # The channel which the bot will join.
 my $channel = "#neoturbine";
 
+for (my $argnum = 0; $argnum <= $#ARGV; $argnum++) {
+	if ($ARGV[$argnum] eq '-j') {
+		$channel = $ARGV[++$argnum];
+	} elsif ($ARGV[$argnum] eq '-n') {
+		$nick = $ARGV[++$argnum];
+		$login = $ARGV[$argnum];
+	} elsif ($ARGV[$argnum] eq '-s') {
+		$server = $ARGV[$argnum];
+	} else {
+		die ("usage");
+	}
+}
+
 # Connect to the IRC server.
 my $sock = new IO::Socket::INET(PeerAddr => $server,
 				PeerPort => 6667,
@@ -37,7 +50,9 @@ while (my $input = <$sock>) {
 		last;
 	}
 	elsif ($input =~ /433/) {
-		die "Nickname is already in use.";
+		print "Nickname is already in use.";
+		$nick .= '_';
+		print $sock "NICK $nick\r\n";
 	}
 }
 
