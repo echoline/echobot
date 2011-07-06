@@ -117,7 +117,7 @@ sub reply {
 
 	my $reply = $rs->reply($from, $msg);
 
-	if ($reply =~ /^ERR:/) {
+	if ($reply =~ /^ERR:/i) {
 		print "$reply\n";
 	} else {
 		print $sock "PRIVMSG $to :$reply\r\n";

@@ -2,7 +2,7 @@
 
 > begin
 	+ request // This trigger is tested first.
-	- {ok}    // An {ok} in the response means it's okay to get a real reply
+	- {lowercase}{ok}{/lowercase}    // An {ok} in the response means it's okay to get a real reply
 < begin
 
 // The Botmaster's Name
